@@ -76,10 +76,20 @@ function viewAllEmployees(){
     
 }
 function viewAllByDepartment(){
-
+    var query = "SELECT * FROM department";
+    connection.query(query, function(err, res){
+        if (err) throw err;
+        console.table(res);
+        start()
+    })
 };
 function viewAllByRoles(){
-
+    var query = "SELECT * FROM role";
+    connection.query(query, function(err, res){
+        if(err) throw err;
+        console.table(res)
+        start()
+    });
 };
 function addEmployee(){
 
