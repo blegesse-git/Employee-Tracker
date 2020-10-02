@@ -119,8 +119,9 @@ function addEmployee(){
     .then(function(answer){
         connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)", [answer.firstName, answer.lastName, answer.roleID, answer.managerID], function(err, res){
             if(err) throw err;
-            start()
+            
         })
+        viewAllEmployees();
     })
 
 };
@@ -136,13 +137,38 @@ function addDepartment(){
     .then(function(answer){
         connection.query("INSERT INTO department (name) VALUES (?)", [answer.department], function(err, res){
             if (err) throw err;
-            console.table(res)
-            start()
+            
+            
         })
+        viewAllByDepartment();
     })
 };
 function addRoles(){
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            message: "Enter the name of the role",
+            name: "roleName"
+        },
+        {
+            type: "input",
+            message: "Enter role's Salary",
+            name: "roleSalary"
+        },
+        {
+            type: "input",
+            message: "Enter the department ID",
+            name: "departmentID"
+        }
+    ])
+    .then(function(answer){
+        connection.query("INSERT INTO role (title, salary, department_id) VALUES (?,?,?)", [answer.roleName, answer.roleSalary, answer.departmentID], function(err, res){
+            if(err) throw err;
 
+        } )
+        viewAllByRoles()
+    })
 };
 function updateEmployeeRoles(){
 
