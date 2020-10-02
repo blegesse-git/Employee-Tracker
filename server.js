@@ -1,6 +1,7 @@
 var mysql = require('mysql2');
 var inquirer = require('inquirer');
 var express = require('express');
+const { DH_UNABLE_TO_CHECK_GENERATOR } = require('constants');
 require('dotenv').config();
 var app = express();
 
@@ -36,7 +37,7 @@ function start() {
             "View All Employees by Department",
             "View All Employees by Roles",
             "Add Employee",
-            "Add Departments",
+            "Add Department",
             "Add Roles",
             "Update Employee Roles",
             
@@ -56,7 +57,7 @@ function start() {
             case "Add Employee":
                 addEmployee();
                 break;
-            case "Add Department ":
+            case "Add Department":
                 addDepartment();
                 break;
             case "Add Roles":
@@ -92,10 +93,53 @@ function viewAllByRoles(){
     });
 };
 function addEmployee(){
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            message: "Enter Employee's first name",
+            name: "firstName"
+        },
+        {
+            type: "input",
+            message: "Enter Employee's last name",
+            name: "lastName"
+        },
+        {
+            type: "input",
+            message: "Enter Employee's role ID number",
+            name: "roleID"
+        },
+        {
+            type: "input",
+            message: "Enter Mananger ID number",
+            name: "managerID"
+        }
+    ])
+    .then(function(answer){
+        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)", [answer.firstName, answer.lastName, answer.roleID, answer.managerID], function(err, res){
+            if(err) throw err;
+            start()
+        })
+    })
 
 };
 function addDepartment(){
-
+    inquirer
+    .prompt(
+        {
+            type: "input",
+            message: "Enter the name of the Department",
+            name: "department"
+        }
+    )
+    .then(function(answer){
+        connection.query("INSERT INTO department (name) VALUES (?)", [answer.department], function(err, res){
+            if (err) throw err;
+            console.table(res)
+            start()
+        })
+    })
 };
 function addRoles(){
 
