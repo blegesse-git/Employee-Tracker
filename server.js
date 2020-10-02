@@ -1,7 +1,6 @@
 var mysql = require('mysql2');
 var inquirer = require('inquirer');
 var express = require('express');
-const { DH_UNABLE_TO_CHECK_GENERATOR } = require('constants');
 require('dotenv').config();
 var app = express();
 
@@ -40,6 +39,7 @@ function start() {
             "Add Department",
             "Add Roles",
             "Update Employee Roles",
+            "Quit"
             
         ]
     })
@@ -65,6 +65,9 @@ function start() {
                 break;
             case "Update Employee Roles":
                 updateEmployeeRoles();
+                break;
+            case "Quit":
+                quit();
                 break;
         }
     });
@@ -171,8 +174,30 @@ function addRoles(){
     })
 };
 function updateEmployeeRoles(){
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            message: "Enter the first name of employee you would like to update",
+            name: "employeeName"
+        },
+        {
+            type: "input",
+            message: "What role would you like to update to?",
+            name: "roleUpdate"
+        }
+    ]).then(function(answer){
+        connection.query("UPDATE employee SET role_id=? WHERE first_name=?", [answer.roleUpdate, answer.employeeName], function(err, res){
+            if(err) throw err;
 
+        })
+        viewAllEmployees();
+    })
 };
+function quit(){
+    connection.end();
+    process.exit();
+}
 
 class DB {
     constructor(connection){
